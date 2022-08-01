@@ -148,7 +148,7 @@ if(empty($_POST['search']) and empty($_GET['pageno'])){
         <!-- /.row -->
       </div><!-- /.container-fluid -->
     </div>
-    <!-- /.content -->
+    
   </div>
 
 <?php include 'footer.html' ?>

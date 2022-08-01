@@ -69,19 +69,13 @@
                   $stmt = $pdo->prepare("SELECT * FROM categories ORDER BY id DESC LIMIT $offset, $numOfRec");
                   $stmt->execute();
                   $result = $stmt->fetchAll();
-                } elseif(empty($_POST['search'])) {
-                  $search_key =  $_COOKIE['search'];
-                  $pdostmt = $pdo->prepare("SELECT * FROM categories WHERE name LIKE '%$search_key%' ORDER BY id DESC");
-                  $pdostmt->execute();
-                  $rawResult = $pdostmt->fetchAll();
-
-                  $total_page = ceil(count($rawResult) / $pageno);
-
-                  $stmt = $pdo->prepare("SELECT * FROM categories WHERE name LIKE '%$search_key%' ORDER BY id DESC LIMIT $offset, $numOfRec");
-                  $stmt->execute();
-                  $result = $stmt->fetchAll();
-                } else {
-                  $search_key =  $_POST['search'];
+                } else{
+                  $search_key = "";
+                  if(empty($_POST['search'])){
+                    $search_key = $_COOKIE['search'];
+                  }else{
+                    $search_key = $_POST['search'];
+                  }
                   $pdostmt = $pdo->prepare("SELECT * FROM categories WHERE name LIKE '%$search_key%' ORDER BY id DESC");
                   $pdostmt->execute();
                   $rawResult = $pdostmt->fetchAll();

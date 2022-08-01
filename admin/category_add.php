@@ -3,6 +3,14 @@
 
     require "../config/config.php";
     require "../config/common.php";
+
+    if(empty($_SESSION['id']) && empty($_SESSION['name'])){
+      header('location: login.php');
+    }
+
+    if($_SESSION['role'] == 0){
+      header('location: login.php');
+    }
     
     $nameError = "";
     $descError = "";

@@ -10,6 +10,15 @@
     if($_SESSION['role'] == 0){
       header('location: login.php');
     }
+
+    // FOR SEARCH
+    if(!empty($_POST['search'])){
+      setcookie('search', $_POST['search'], time() + (86400 * 30), "/");
+    }
+    if(empty($_POST['search']) and empty($_GET['pageno'])){
+      unset($_COOKIE['search']);
+      setcookie('search', null, -1, '/');
+    }
 ?>
 
 <?php include 'header.php'; ?>
@@ -28,14 +37,14 @@
 
           <div class="card-body">
 
-            <a href="category_add.php" type="button" class="btn btn-success mb-3">User Add</a>
+            <a href="user_add.php" type="button" class="btn btn-success mb-3">User Add</a>
 
             <table class="table table-bordered mb-4">
               <thead>
                 <tr>
                   <th style="width: 10px">#</th>
                   <th>Name</th>
-                  <th>Description</th>
+                  <th>Email</th>
                   <th style="width: 40px">Actions</th>
                 </tr>
               </thead>
@@ -50,19 +59,63 @@
                 $numOfRec = 5;
                 $offset = ($pageno - 1) * $numOfRec;
 
-                $pdostmt = $pdo->prepare("SELECT * FROM categories ORDER BY id DESC");
-                $pdostmt->execute();
-                $rawResult = $pdostmt->fetchAll();
+                if(empty($_COOKIE['search']) && empty($_POST['search'])){
+                  $pdostmt = $pdo->prepare("SELECT * FROM users ORDER BY id DESC");
+                  $pdostmt->execute();
+                  $rawResult = $pdostmt->fetchAll();
 
-                $total_page = ceil(count($rawResult) / $pageno);
+                  $total_page = ceil(count($rawResult) / $pageno);
 
-                $stmt = $pdo->prepare("SELECT * FROM categories ORDER BY id DESC LIMIT $offset, $numOfRec");
-                $stmt->execute();
-                $result = $stmt->fetchAll();
+                  $stmt = $pdo->prepare("SELECT * FROM users ORDER BY id DESC LIMIT $offset, $numOfRec");
+                  $stmt->execute();
+                  $result = $stmt->fetchAll();
+                }else {
+                  $search_key = "";
+                  if(empty($_POST['search'])){
+                    $search_key = $_COOKIE['search'];
+                  }else{
+                    $search_key = $_POST['search'];
+                  }
+                  $pdostmt = $pdo->prepare("SELECT * FROM users WHERE name LIKE '%$search_key%' ORDER BY id DESC");
+                  $pdostmt->execute();
+                  $rawResult = $pdostmt->fetchAll();
+
+                  $total_page = ceil(count($rawResult) / $pageno);
+
+                  $stmt = $pdo->prepare("SELECT * FROM users WHERE name LIKE '%$search_key%' ORDER BY id DESC LIMIT $offset, $numOfRec");
+                  $stmt->execute();
+                  $result = $stmt->fetchAll();
+                }
+                
               ?>
 
               <tbody>
-                
+                <?php 
+                  $i = 1;
+                  foreach($result as $value) { ?>
+                    <tr>
+                      <td><?php echo $i; ?></td>
+                      <td><?php echo escape($value['name']); ?></td>
+                      <td><?php echo escape($value['email']); ?></td>
+                      <td>
+                      <div class="btn-group">
+                            <div class="container">
+                              <a href="user_edit.php?editId=<?php echo $value['id'] ?>"
+                                type="button"
+                                class="btn btn-warning btn-sm">Edit</a>
+                            </div>
+                            <div class="container">
+                              <a href="user_delete.php?deleteId=<?php echo $value['id'] ?>"
+                              type="button"
+                              class="btn btn-danger btn-sm"
+                              onclick="return confirm('Are you sure you want to delete?')">Delete</a>
+                            </div>
+                      </td>
+                    </tr>
+                    <?php
+                    $i++;
+                  }
+                ?>
               </tbody>
             </table>
 
