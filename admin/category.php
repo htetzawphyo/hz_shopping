@@ -64,7 +64,7 @@
                   $pdostmt->execute();
                   $rawResult = $pdostmt->fetchAll();
 
-                  $total_page = ceil(count($rawResult) / $pageno);
+                  $total_page = ceil(count($rawResult) / $numOfRec);
 
                   $stmt = $pdo->prepare("SELECT * FROM categories ORDER BY id DESC LIMIT $offset, $numOfRec");
                   $stmt->execute();
@@ -80,7 +80,7 @@
                   $pdostmt->execute();
                   $rawResult = $pdostmt->fetchAll();
 
-                  $total_page = ceil(count($rawResult) / $pageno);
+                  $total_page = ceil(count($rawResult) / $numOfRec);
 
                   $stmt = $pdo->prepare("SELECT * FROM categories WHERE name LIKE '%$search_key%' ORDER BY id DESC LIMIT $offset, $numOfRec");
                   $stmt->execute();

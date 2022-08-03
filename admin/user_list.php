@@ -64,7 +64,7 @@
                   $pdostmt->execute();
                   $rawResult = $pdostmt->fetchAll();
 
-                  $total_page = ceil(count($rawResult) / $pageno);
+                  $total_page = ceil(count($rawResult) / $numOfRec);
 
                   $stmt = $pdo->prepare("SELECT * FROM users ORDER BY id DESC LIMIT $offset, $numOfRec");
                   $stmt->execute();
