@@ -9,7 +9,7 @@
     }
 
     if($_SESSION['role'] == 0){
-      header('location: login.php');
+      header('location: ../login.php');
     }
 
 ?>

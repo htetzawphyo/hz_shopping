@@ -8,7 +8,7 @@
     }
 
     if($_SESSION['role'] == 0){
-      header('location: login.php');
+      header('location: ../login.php');
     }
     // FOR ADD USER
 
@@ -32,9 +32,16 @@
         }
         if(strlen($password) < 4){
             $passwordShortError = "At least 4 character password!";
-          }
+        }
 
-        if(!empty($name) && !empty($email) && !empty($password) && $passwordShortError == ""){
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE email=:email");
+        $stmt->execute([':email' => $email]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if($user){
+          echo '<script>alert("Already have Email!");</script>';
+        }else {
+          if(!empty($name) && !empty($email) && !empty($password) && $passwordShortError == ""){
             $hashPassword = password_hash($password, PASSWORD_DEFAULT);
             $stmt = $pdo->prepare("INSERT INTO users (name,email,password) 
                                    VALUES (:name,:email,:password)");
@@ -46,6 +53,7 @@
             if($result){
                 header('location: user_list.php');
             }
+          }
         }
     }
 ?>
