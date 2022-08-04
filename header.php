@@ -1,3 +1,9 @@
+<?php
+if(session_status() == PHP_SESSION_NONE){
+	session_start();
+}
+require "config/common.php"
+?>
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
 
@@ -38,7 +44,7 @@
 			<nav class="navbar navbar-expand-lg navbar-light main_box">
 				<div class="container">
 					<!-- Brand and toggle get grouped for better mobile display -->
-					<a class="navbar-brand logo_h" href="index.html"><h4>AP Shopping<h4></a>
+					<a class="navbar-brand logo_h" href="index.php"><h4>AP Shopping<h4></a>
 					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
 					 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="icon-bar"></span>
@@ -59,8 +65,9 @@
 		</div>
 		<div class="search_input" id="search_input_box">
 			<div class="container">
-				<form class="d-flex justify-content-between">
-					<input type="text" class="form-control" id="search_input" placeholder="Search Here">
+				<form action="index.php" class="d-flex justify-content-between" method="post">
+				<input type="hidden" name="_token" value="<?php echo $_SESSION['_token'] ?>">
+					<input name="search" type="text" class="form-control" id="search_input" placeholder="Search Here">
 					<button type="submit" class="btn"></button>
 					<span class="lnr lnr-cross" id="close_search" title="Close Search"></span>
 				</form>
@@ -81,30 +88,4 @@
 		</div>
 	</section>
 	<!-- End Banner Area -->
-	<div class="container">
-		<div class="row">
-			<div class="col-xl-3 col-lg-4 col-md-5">
-				<div class="sidebar-categories">
-					<div class="head">Browse Categories</div>
-					<ul class="main-categories">
-						<li class="main-nav-list"><a href="#fruitsVegetable" aria-expanded="false" aria-controls="fruitsVegetable"><span
-								 class="lnr lnr-arrow-right"></span>Fruits and Vegetables</a>
-						</li>
-							</ul>
-						</li>
-					</ul>
-				</div>
-			</div>
-			<div class="col-xl-9 col-lg-8 col-md-7">
-				<!-- Start Filter Bar -->
-				<div class="filter-bar d-flex flex-wrap align-items-center">
-					<div class="pagination">
-						<a href="#" class="prev-arrow"><i class="fa fa-long-arrow-left" aria-hidden="true"></i></a>
-						<a href="#" class="active">1</a>
-						<a href="#">2</a>
-						<a href="#">3</a>
-						<a href="#" class="dot-dot"><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a>
-						<a href="#">6</a>
-						<a href="#" class="next-arrow"><i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
-					</div>
-				</div>
+	
