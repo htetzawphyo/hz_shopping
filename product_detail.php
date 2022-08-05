@@ -1,25 +1,37 @@
-<?php include('header.html') ?>
+<?php 
+include('header.php'); 
+
+require "config/config.php";
+
+if(session_status() == PHP_SESSION_NONE){
+  session_start();
+}
+
+if(empty($_SESSION['id']) || empty($_SESSION['name'])){
+  header('location: login.php');
+}
+if($_SESSION['role'] == 1){
+  header('location: admin/login.php');
+}
+
+$stmt = $pdo->prepare("SELECT * FROM products WHERE id=".$_GET['product_detail_id']);
+$stmt->execute();
+$result = $stmt->fetch();
+
+?>
 <!--================Single Product Area =================-->
-<div class="product_image_area">
+<div class="product_image_area pt-0">
   <div class="container">
     <div class="row s_product_inner">
       <div class="col-lg-6">
-        <div class="s_Product_carousel">
-          <div class="single-prd-item">
-            <img class="img-fluid" src="img/category/s-p1.jpg" alt="">
-          </div>
-          <div class="single-prd-item">
-            <img class="img-fluid" src="img/category/s-p1.jpg" alt="">
-          </div>
-          <div class="single-prd-item">
-            <img class="img-fluid" src="img/category/s-p1.jpg" alt="">
-          </div>
+        <div class="single-prd-item">
+          <img class="img-fluid" src="admin/images/<?php echo $result['image']; ?>" width="400">
         </div>
       </div>
       <div class="col-lg-5 offset-lg-1">
         <div class="s_product_text">
-          <h3>Faded SkyBlu Denim Jeans</h3>
-          <h2>$149.99</h2>
+          <h3><?php echo escape($result['name']); ?></h3>
+          <h2><?php echo escape($result['price']); ?></h2>
           <ul class="list">
             <li><a class="active" href="#"><span>Category</span> : Household</a></li>
             <li><a href="#"><span>Availibility</span> : In Stock</a></li>
@@ -37,6 +49,7 @@
           </div>
           <div class="card_area d-flex align-items-center">
             <a class="primary-btn" href="#">Add to Cart</a>
+            <a class="primary-btn" href="index.php">Back</a>
           </div>
         </div>
       </div>

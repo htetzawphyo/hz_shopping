@@ -39,15 +39,29 @@ if(empty($_POST['search']) and empty($_GET['pageno'])){
 	$offset = ($pageno - 1) * $numOfRec;
 
 	if(empty($_POST['search']) && empty($_COOKIE['search'])){
-		$stmt = $pdo->prepare("SELECT * FROM products ORDER BY id DESC");
-		$stmt->execute();
-		$rawResult = $stmt->fetchAll();
 
-		$total_page = ceil(count($rawResult) / $numOfRec);
+		if(isset($_GET['category_id'])){
+			$id = $_GET['category_id'];
+			$stmt = $pdo->prepare("SELECT * FROM products WHERE category_id=$id ORDER BY id DESC");
+			$stmt->execute();
+			$rawResult = $stmt->fetchAll();
+			
+			$total_page = ceil(count($rawResult) / $numOfRec);
 
-		$stmt = $pdo->prepare("SELECT * FROM products ORDER BY id DESC LIMIT $offset, $numOfRec");
-		$stmt->execute();
-		$result = $stmt->fetchAll();
+			$stmt = $pdo->prepare("SELECT * FROM products WHERE category_id=$id ORDER BY id DESC LIMIT $offset, $numOfRec");
+			$stmt->execute();
+			$result = $stmt->fetchAll();
+		}else{
+			$stmt = $pdo->prepare("SELECT * FROM products ORDER BY id DESC");
+			$stmt->execute();
+			$rawResult = $stmt->fetchAll();
+
+			$total_page = ceil(count($rawResult) / $numOfRec);
+
+			$stmt = $pdo->prepare("SELECT * FROM products ORDER BY id DESC LIMIT $offset, $numOfRec");
+			$stmt->execute();
+			$result = $stmt->fetchAll();
+		}		
 	}else {
 		$search_key = "";
 		if(isset($_POST['search'])){
@@ -65,7 +79,6 @@ if(empty($_POST['search']) and empty($_GET['pageno'])){
 		$stmt->execute();
 		$result = $stmt->fetchAll();
 	}
-
 ?>
     <!-- Categories -->
 	<div class="container">
@@ -118,7 +131,9 @@ if(empty($_POST['search']) and empty($_GET['pageno'])){
 					<!-- single product -->
 					<div class="col-lg-4 col-md-6">
 						<div class="single-product">
-							<img class="img-fluid" src="admin/images/<?php echo escape($value['image']); ?>" alt="" style="height: 250px">
+							<a href="product_detail.php?product_detail_id=<?php echo $value['id']; ?>">
+								<img class="img-fluid" src="admin/images/<?php echo escape($value['image']); ?>" alt="" style="height: 250px">
+							</a>
 							<div class="product-details">
 								<h6><?php echo escape($value['name']); ?></h6>
 								<div class="price">
@@ -130,7 +145,7 @@ if(empty($_POST['search']) and empty($_GET['pageno'])){
 										<span class="ti-bag"></span>
 										<p class="hover-text">add to bag</p>
 									</a>
-									<a href="" class="social-info">
+									<a href="product_detail.php?product_detail_id=<?php echo $value['id']; ?>" class="social-info">
 										<span class="lnr lnr-move"></span>
 										<p class="hover-text">view more</p>
 									</a>

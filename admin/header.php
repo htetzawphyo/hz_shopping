@@ -44,29 +44,31 @@ scratch. This page gets rid of all links and provides the needed markup only.
              $page = end($link_arr);
            ?>
 
-          <form class="form-inline" method="post" 
-          <?php 
-             if($page == 'index.php') : ?>
-              action = 'index.php'
-             <?php elseif($page == 'category.php') : ?>
-              action = 'category.php'
-             <?php elseif($page == 'user_list.php') : ?>
-              action = 'user_list.php'
-             <?php endif; ?>
-          >
-            <input type="hidden" name="_token" value="<?php echo $_SESSION['_token'] ?>">
-            <div class="input-group input-group-sm">
-              <input name="search" class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-              <div class="input-group-append">
-                <button class="btn btn-navbar" type="submit">
-                  <i class="fas fa-search"></i>
-                </button>
-                <button class="btn btn-navbar" type="button" data-widget="navbar-search">
-                  <i class="fas fa-times"></i>
-                </button>
-              </div>
-            </div>
-          </form>
+          <?php if($page == 'index.php' || $page == 'category.php' || $page == 'user_list.php'){ ?>
+            <?php if($page != 'order_list.php'){?>
+                <form class="form-inline" method="post" 
+                <?php 
+                  if($page == 'index.php') : ?>
+                    action = 'index.php'
+                  <?php elseif($page == 'category.php') : ?>
+                    action = 'category.php'
+                  <?php elseif($page == 'user_list.php') : ?>
+                    action = 'user_list.php'
+                  <?php endif; ?>
+                >
+                <input type="hidden" name="_token" value="<?php echo $_SESSION['_token'] ?>">
+                <div class="input-group input-group-sm">
+                  <input name="search" class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+                  <div class="input-group-append">
+                    <button class="btn btn-navbar" type="submit">
+                      <i class="fas fa-search"></i>
+                    </button>
+                  </div>
+                </div>
+              </form>
+            <?php } ?>
+          <?php } ?>       
+
         </div>
       </li>
     </ul>

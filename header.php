@@ -2,7 +2,7 @@
 if(session_status() == PHP_SESSION_NONE){
 	session_start();
 }
-require "config/common.php"
+require "config/common.php";
 ?>
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
@@ -77,7 +77,7 @@ require "config/common.php"
 	<!-- End Header Area -->
 
 	<!-- Start Banner Area -->
-	<section class="banner-area organic-breadcrumb">
+	<section class="banner-area organic-breadcrumb mb-0">
 		<div class="container">
 			<div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
 				<div class="col-first">
