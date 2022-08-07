@@ -90,7 +90,19 @@ require "config/common.php";
 			<div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
 				<div class="col-first">
 					<h1>Welcome</h1>
-
+					<a href="login.php" class="primary-btn text-dark" 
+					   style="line-height:30px;
+					   		  background:white;">Logout</a>							  					
+					<?php
+						$link = $_SERVER['PHP_SELF'];
+						$link_arr = explode('/', $link);
+						$page = end($link_arr);
+						if($page == 'cart.php'){ ?>
+							<a href="index.php" class="primary-btn text-dark" 
+									style="line-height:30px;
+									background:white;">Back</a>
+					<?php }
+					?>
 				</div>
 			</div>
 		</div>
