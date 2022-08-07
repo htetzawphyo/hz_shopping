@@ -1,3 +1,71 @@
+<?php
+session_start();
+require "config/config.php";
+require "config/common.php";
+
+if(empty($_SESSION['id']) && empty($_SESSION['name'])){
+	header('location: login.php');
+}
+if($_SESSION['role'] == 1){
+	header('location: admin/login.php');
+}
+
+$userId = $_SESSION['id'];
+$total = 0;
+
+if(!empty($_SESSION['cart'])){
+	foreach($_SESSION['cart'] as $key => $qty){ 
+		$id = str_replace('id', '', $key);
+		$stmt = $pdo->prepare("SELECT * FROM products WHERE id=:id");
+		$stmt->execute([':id' => $id]);
+		$result = $stmt->fetch();
+		$total += $result['price'] * $qty;
+	}
+	
+		//insert into sale_order
+		$stmt = $pdo->prepare("INSERT INTO sale_orders(user_id, total_price, order_date)
+							   VALUE (:id, :tprice, :odate)");
+		$result = $stmt->execute([
+			':id' => $userId,
+			':tprice' => $total,
+			':odate' => date('Y-m-d H:i:s')
+			]);
+	
+		if($result){
+			$sale_order_id = $pdo->lastInsertId();
+			// insert into sale_order_detail
+			foreach($_SESSION['cart'] as $key => $qty){ 
+				$id = str_replace('id', '', $key);
+	
+				$stmt = $pdo->prepare("INSERT INTO sale_order_detail(sale_order_id, product_id, quantity, order_date)
+									   VALUE (:sId, :pId, :qty, :odate)");
+				$result = $stmt->execute([
+					':sId' => $sale_order_id,
+					':pId' => $id,
+					':qty' => $qty,
+					':odate' => date('Y-m-d H:i:s')
+				]);
+	
+				// select quantity form products table for update quantity
+				$qtyStmt = $pdo->prepare("SELECT quantity FROM products WHERE id=$id");
+				$qtyStmt->execute();
+				$qResult = $qtyStmt->fetch();
+	
+				$updateQty = $qResult['quantity'] - $qty;
+	
+				$stmt = $pdo->prepare("UPDATE products SET quantity=:qty WHERE id=:id");
+				$stmt->execute([
+					':qty' => $updateQty,
+					':id' => $id
+				]);
+	
+			}
+			unset($_SESSION['cart']);
+		}
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
 
@@ -15,7 +83,7 @@
 	<!-- meta character set -->
 	<meta charset="UTF-8">
 	<!-- Site Title -->
-	<title>Karma Shop</title>
+	<title>HZ Shop</title>
 
 	<!--
 		CSS
@@ -38,7 +106,7 @@
 			<nav class="navbar navbar-expand-lg navbar-light main_box">
 				<div class="container">
 					<!-- Brand and toggle get grouped for better mobile display -->
-					<a class="navbar-brand logo_h" href="index.html"><h4>AP Shopping<h4></a>
+					<a class="navbar-brand logo_h" href="index.php"><h4>HZ Shopping<h4></a>
 					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
 					 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="icon-bar"></span>
@@ -88,30 +156,7 @@
 	<section class="order_details section_gap">
 		<div class="container">
 			<h3 class="title_confirmation">Thank you. Your order has been received.</h3>
-			<div class="row order_d_inner">
-				<div class="col-lg-6">
-					<div class="details_item">
-						<h4>Order Info</h4>
-						<ul class="list">
-							<li><a href="#"><span>Order number</span> : 60235</a></li>
-							<li><a href="#"><span>Date</span> : Los Angeles</a></li>
-							<li><a href="#"><span>Total</span> : USD 2210</a></li>
-							<li><a href="#"><span>Payment method</span> : Check payments</a></li>
-						</ul>
-					</div>
-				</div>
-				<div class="col-lg-6">
-					<div class="details_item">
-						<h4>Shipping Address</h4>
-						<ul class="list">
-							<li><a href="#"><span>Street</span> : 56/8</a></li>
-							<li><a href="#"><span>City</span> : Los Angeles</a></li>
-							<li><a href="#"><span>Country</span> : United States</a></li>
-							<li><a href="#"><span>Postcode </span> : 36952</a></li>
-						</ul>
-					</div>
-				</div>
-			</div>
+			
 		</div>
 	</section>
 	<!--================End Order Details Area =================-->

@@ -42,23 +42,23 @@ if(empty($_POST['search']) and empty($_GET['pageno'])){
 
 		if(isset($_GET['category_id'])){
 			$id = $_GET['category_id'];
-			$stmt = $pdo->prepare("SELECT * FROM products WHERE category_id=$id ORDER BY id DESC");
+			$stmt = $pdo->prepare("SELECT * FROM products WHERE category_id=$id AND quantity > 0 ORDER BY id DESC");
 			$stmt->execute();
 			$rawResult = $stmt->fetchAll();
 			
 			$total_page = ceil(count($rawResult) / $numOfRec);
 
-			$stmt = $pdo->prepare("SELECT * FROM products WHERE category_id=$id ORDER BY id DESC LIMIT $offset, $numOfRec");
+			$stmt = $pdo->prepare("SELECT * FROM products WHERE category_id=$id AND quantity > 0 ORDER BY id DESC LIMIT $offset, $numOfRec");
 			$stmt->execute();
 			$result = $stmt->fetchAll();
 		}else{
-			$stmt = $pdo->prepare("SELECT * FROM products ORDER BY id DESC");
+			$stmt = $pdo->prepare("SELECT * FROM products WHERE quantity > 0 ORDER BY id DESC");
 			$stmt->execute();
 			$rawResult = $stmt->fetchAll();
 
 			$total_page = ceil(count($rawResult) / $numOfRec);
 
-			$stmt = $pdo->prepare("SELECT * FROM products ORDER BY id DESC LIMIT $offset, $numOfRec");
+			$stmt = $pdo->prepare("SELECT * FROM products WHERE quantity > 0 ORDER BY id DESC LIMIT $offset, $numOfRec");
 			$stmt->execute();
 			$result = $stmt->fetchAll();
 		}		
@@ -69,13 +69,13 @@ if(empty($_POST['search']) and empty($_GET['pageno'])){
 		} else{
 		$search_key = $_COOKIE['search'];
 		}
-		$stmt = $pdo->prepare("SELECT * FROM products WHERE name LIKE '%$search_key%' ORDER BY id DESC");
+		$stmt = $pdo->prepare("SELECT * FROM products WHERE name LIKE '%$search_key%' AND quantity > 0 ORDER BY id DESC");
 		$stmt->execute();
 		$rawResult = $stmt->fetchAll();
 
 		$total_page = ceil(count($rawResult) / $numOfRec);
 
-		$stmt = $pdo->prepare("SELECT * FROM products WHERE name LIKE '%$search_key%' ORDER BY id DESC LIMIT $offset, $numOfRec");
+		$stmt = $pdo->prepare("SELECT * FROM products WHERE name LIKE '%$search_key%' AND quantity > 0 ORDER BY id DESC LIMIT $offset, $numOfRec");
 		$stmt->execute();
 		$result = $stmt->fetchAll();
 	}
@@ -141,14 +141,21 @@ if(empty($_POST['search']) and empty($_GET['pageno'])){
 								</div>
 								<div class="prd-bottom">
 
-									<a href="" class="social-info">
-										<span class="ti-bag"></span>
-										<p class="hover-text">add to bag</p>
-									</a>
-									<a href="product_detail.php?product_detail_id=<?php echo $value['id']; ?>" class="social-info">
-										<span class="lnr lnr-move"></span>
-										<p class="hover-text">view more</p>
-									</a>
+									<form action="add_to_cart.php" method="post">
+									<input type="hidden" name="_token" value="<?php echo $_SESSION['_token'] ?>">
+									<input type="hidden" name="id" value="<?php echo $value['id']; ?>">
+									<input type="hidden" name="qty" value="1">
+										<div class="social-info">
+											<button type="submit" style="display:contents" class="social-info">
+												<span class="ti-bag"></span>
+												<p class="hover-text" style="left:20px">add to bag</p>
+											</button>
+										</div>
+										<a href="product_detail.php?product_detail_id=<?php echo $value['id']; ?>" class="social-info">
+											<span class="lnr lnr-move"></span>
+											<p class="hover-text">view more</p>
+										</a>
+									</form>
 								</div>
 							</div>
 						</div>
