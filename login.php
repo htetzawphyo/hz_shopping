@@ -147,7 +147,7 @@ if(isset($_POST['loginButton'])){
 								<i class="text-danger"><?php echo $emailErr; ?></i>
 							</div>
 							<div class="col-md-12 form-group">
-								<input type="text" id="name" name="password" 
+								<input type="password" id="name" name="password" 
 									   placeholder="Password" onfocus="this.placeholder = ''" 
 									   onblur="this.placeholder = 'Password'"
 									   class="form-control <?php if($passErr != "" || $passShortErr != ""){echo 'border border-danger';} ?>" >

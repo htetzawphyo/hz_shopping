@@ -49,28 +49,37 @@
             if(empty($img['name'])){
                 $imgError = "The image field is required!";
             }
-        }else {   // Success validation     
-            $file = 'images/'.($_FILES['image']['name']);
-            $imageType = pathinfo($file, PATHINFO_EXTENSION);
+        }else {   // fields are includes
+            if(!is_numeric($quant)){
+                $quantError = "Quantity should be number!";
+            }    
+            if(!is_numeric($price)){
+                $priceError = "Price should be number!";
+            }
+            if($quantError == '' and $priceError == ''){
+                $file = 'images/'.($_FILES['image']['name']);
+                $imageType = pathinfo($file, PATHINFO_EXTENSION);
 
-            if($imageType == "jpg" || $imageType == "png" || $imageType == "jpeg"){
-                move_uploaded_file($_FILES['image']['tmp_name'],$file);
+                if($imageType == "jpg" || $imageType == "png" || $imageType == "jpeg"){
+                    move_uploaded_file($_FILES['image']['tmp_name'],$file);
 
-                $pdostmt = $pdo->prepare("INSERT INTO products (name,description,category_id,quantity,price,image) 
-                                    VALUES (:name,:desc,:cat,:quant,:price,:image)");
-                $result = $pdostmt->execute([
-                    ':name' => $name,
-                    ':desc' => $desc,
-                    ':cat' => $cat,
-                    ':quant' => $quant,
-                    ':price' => $price,
-                    ':image' => $img
-                ]);
-                if($result){
-                    header('location: index.php');
-                }
-                }
-            }            
+                    $pdostmt = $pdo->prepare("INSERT INTO products (name,description,category_id,quantity,price,image) 
+                                        VALUES (:name,:desc,:cat,:quant,:price,:image)");
+                    $result = $pdostmt->execute([
+                        ':name' => $name,
+                        ':desc' => $desc,
+                        ':cat' => $cat,
+                        ':quant' => $quant,
+                        ':price' => $price,
+                        ':image' => $img
+                    ]);
+                    if($result){
+                        header('location: index.php');
+                    }
+                    }
+                }   
+            }
+                     
     }
 
 ?>

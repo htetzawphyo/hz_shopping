@@ -52,48 +52,57 @@
             }elseif(!is_numeric($price)){
                 $priceError = "Price should be number!";
             }
-        }else {   // Success validation
-            $img = $_FILES['image']['name'];
-            if($_FILES['image']['name'] != null){
+        }else {   // fields are includes
+            if(!is_numeric($quant)){
+                $quantError = "Quantity should be number!";
+            }
+            if(!is_numeric($price)){
+                $priceError = "Price should be number!";
+            }
+            if($quantError == '' and $priceError == ''){
+                $img = $_FILES['image']['name'];
+                if($_FILES['image']['name'] != null){
 
-            $file = 'images/'.($_FILES['image']['name']);
-            $imageType = pathinfo($file, PATHINFO_EXTENSION);
+                $file = 'images/'.($_FILES['image']['name']);
+                $imageType = pathinfo($file, PATHINFO_EXTENSION);
 
-            if($imageType == "jpg" || $imageType == "png" || $imageType == "jpeg"){
-                move_uploaded_file($_FILES['image']['tmp_name'],$file);
+                if($imageType == "jpg" || $imageType == "png" || $imageType == "jpeg"){
+                    move_uploaded_file($_FILES['image']['tmp_name'],$file);
 
-                $pdostmt = $pdo->prepare("UPDATE products SET name=:name, description=:desc, category_id=:cat,
-                                          quantity=:quant, price=:price, image=:image WHERE id=$id");
+                    $pdostmt = $pdo->prepare("UPDATE products SET name=:name, description=:desc, category_id=:cat,
+                                            quantity=:quant, price=:price, image=:image WHERE id=$id");
 
-                $result = $pdostmt->execute([
-                    ':name' => $name,
-                    ':desc' => $desc,
-                    ':cat' => $cat,
-                    ':quant' => $quant,
-                    ':price' => $price,
-                    ':image' => $img
-                ]);
-                if($result){
-                    header('location: index.php');
-                }
-                }
-            } else {
-                $pdostmt = $pdo->prepare("UPDATE products SET name=:name, description=:desc, category_id=:cat,
-                                          quantity=:quant, price=:price WHERE id=$id");
+                    $result = $pdostmt->execute([
+                        ':name' => $name,
+                        ':desc' => $desc,
+                        ':cat' => $cat,
+                        ':quant' => $quant,
+                        ':price' => $price,
+                        ':image' => $img
+                    ]);
+                    if($result){
+                        header('location: index.php');
+                    }
+                    }
+                } else {
+                    $pdostmt = $pdo->prepare("UPDATE products SET name=:name, description=:desc, category_id=:cat,
+                                            quantity=:quant, price=:price WHERE id=$id");
 
-                $result = $pdostmt->execute([
-                    ':name' => $name,
-                    ':desc' => $desc,
-                    ':cat' => $cat,
-                    ':quant' => $quant,
-                    ':price' => $price
-                ]);
-                if($result){
-                    #echo "<script>swal('Good job!', 'Update Successfully!', 'success');window.location.href='index.php';</script>";
-                    header('location: index.php');
+                    $result = $pdostmt->execute([
+                        ':name' => $name,
+                        ':desc' => $desc,
+                        ':cat' => $cat,
+                        ':quant' => $quant,
+                        ':price' => $price
+                    ]);
+                    if($result){
+                        #echo "<script>swal('Good job!', 'Update Successfully!', 'success');window.location.href='index.php';</script>";
+                        header('location: index.php');
+                    }
                 }
             }
-        }
+            }
+            
                       
     }
 

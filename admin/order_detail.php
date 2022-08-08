@@ -40,7 +40,7 @@
                   $pageno = 1;
                 }
 
-                $numOfRec = 5;
+                $numOfRec = 1;
                 $offset = ($pageno - 1) * $numOfRec;
 
                 $pdoStmt = $pdo->prepare("SELECT * FROM sale_order_detail WHERE sale_order_id=".$_GET['viewId']);
@@ -89,17 +89,17 @@
                  <!-- pagination -->
                  <nav aria-label="Page navigation example" class="float-right">
                    <ul class="pagination">
-                      <li class="page-item"><a class="page-link" href="?pageno=1">First</a></li>
+                      <li class="page-item"><a class="page-link" href="?viewId=<?php echo $_GET['viewId']?>&pageno=1">First</a></li>
                       <li class="page-item <?php if($pageno <= 1){echo 'disabled';} ?>">
                         <a class="page-link" href="<?php if($pageno <= 1){echo '#';}
-                                    else{echo '?pageno='.($pageno - 1);} ?>">Prev</a>
+                                    else{echo '?viewId='.$_GET['viewId'].'&pageno='.($pageno - 1);} ?>">Prev</a>
                       </li>
                       <li class="page-item"><a class="page-link" href="#"><?php echo $pageno; ?></a></li>
                       <li class="page-item <?php if($pageno >= $totalPage){echo 'disabled';} ?>">
                         <a class="page-link" href="<?php if($pageno >= $totalPage){echo '#';}
-                                    else{echo '?pageno='.($pageno + 1);} ?>">Next</a>
+                                    else{echo '?viewId='.$_GET['viewId'].'&pageno='.($pageno + 1);} ?>">Next</a>
                       </li>
-                      <li class="page-item"><a class="page-link" href="?pageno=<?php echo $totalPage; ?>">Last</a></li>
+                      <li class="page-item"><a class="page-link" href="?viewId=<?php echo $_GET['viewId']?>&pageno=<?php echo $totalPage; ?>">Last</a></li>
                    </ul>
                  </nav>
 

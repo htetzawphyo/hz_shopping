@@ -145,6 +145,9 @@ if(!empty($_SESSION['cart'])){
 					<h1>Confirmation</h1>
 					<nav class="d-flex align-items-center">
 						<a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
+						<a href="index.php" class="primary-btn text-dark" 
+									style="line-height:30px;
+									background:white;">Back</a>
 					</nav>
 				</div>
 			</div>
